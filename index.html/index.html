@@ -2,54 +2,120 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Автоинструктор — обучение вождению</title>
+  <title>Автоинструктор</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <h1>Частный автоинструктор</h1>
-    <p>Обучение вождению с нуля и повышение навыков</p>
-    <button id="signupBtn">Записаться на занятие</button>
-  </header>
+<header>
+  <h1>Частный автоинструктор</h1>
+  <nav>
+    <a href="#services">Услуги</a>
+    <a href="#about">Обо мне</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+</header>
 
-  <main>
-    <section>
-      <h2>Услуги</h2>
-      <ul>
-        <li>Обучение с нуля</li>
-        <li>Подготовка к экзамену</li>
-        <li>Восстановление навыков</li>
-      </ul>
-    </section>
+<main>
 
-    <section>
-      <h2>Обо мне</h2>
-      <p>Опытный автоинструктор с большим стажем обучения.</p>
-    </section>
-
-    <section>
-      <h2>Контакты</h2>
-      <p>Телефон: +7 (___) ___-__-__</p>
-   
-    </section>
-  <section id="signup">
-  <h2>Записаться на занятие</h2>
-  <form id="signupForm">
-    <input type="text" id="name" placeholder="Ваше имя" required>
-    <input type="tel" id="phone" placeholder="Телефон" required>
-    <button type="submit">Отправить заявку</button>
-  </form>
-  <p id="message"></p>
-  <p>Тест GitHub</p>
+  <section id="hero">
+  <div class="hero-content">
+    <h2>Научитесь водить<br>уверенно и без стресса</h2>
+    <p>Обучение вождению и повышение навыков</p>
+    <button>Записаться на занятия</button>
+  </div>
 </section>
-  </main>
 
-  <footer>
-    <p>© 2026 Автоинструктор</p>
-  </footer>
+  <!-- УСЛУГИ -->
+  <section id="services">
+  <h2>Услуги</h2>
 
-  <script src="js/script.js"></script>
+  <div class="services">
+    <div class="card">Восстановление навыков</div>
+    <div class="card">Отработка маршрутов</div>
+    <div class="card">Парковка</div>
+    <div class="card">Сложные перекрёстки</div>
+  </div>
+</section>
+  <!-- ОБО МНЕ -->
+  <section id="about">
+  <h2>Обо мне</h2>
+
+  <div class="about">
+    <div class="photo"></div>
+    <p>
+      Приветствую! Меня зовут Ирина, я — частный автоинструктор...
+    </p>
+  </div>
+</section>
+<section id="why">
+  <h2>Почему индивидуальный инструктор лучше автошколы?</h2>
+
+  <div class="why-cards">
+    <div class="why-card">
+      <h3>Всё внимание — вам</h3>
+      <p>Индивидуальный подход без других учеников</p>
+    </div>
+
+    <div class="why-card">
+      <h3>Легко договориться</h3>
+      <p>Гибкие условия и удобное время</p>
+    </div>
+
+    <div class="why-card">
+      <h3>Гибкий график</h3>
+      <p>Подстраиваюсь под ваш ритм жизни</p>
+    </div>
+  </div>
+</section>
+
+  <!-- КОНТАКТЫ + ФОРМА -->
+  <section id="contacts">
+    <h2>Контакты</h2>
+    <p>Телефон: +7 (___) ___-__-__</p>
+
+    <form id="signupForm">
+      <input type="text" id="name" placeholder="Ваше имя" required>
+      <input type="tel" id="phone" placeholder="Телефон" required>
+      <button type="submit">Отправить</button>
+    </form>
+
+    <p id="message"></p>
+  </section>
+
+  <!-- ПРЕИМУЩЕСТВА -->
+  <section id="advantages">
+    <h2>Почему выбрать меня</h2>
+    <div>
+      <div>Индивидуальный подход</div>
+      <div>Спокойное обучение</div>
+      <div>Быстрый результат</div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <h2>Часто задаваемые вопросы</h2>
+
+    <div>
+      <p><strong>Сколько длится занятие?</strong></p>
+      <p>Обычно 1–2 часа.</p>
+    </div>
+
+    <div>
+      <p><strong>Можно ли с нуля?</strong></p>
+      <p>Да, обучаю с полного нуля.</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Автоинструктор</p>
+</footer>
+
+<script src="js/script.js"></script>
 </body>
 </html>
