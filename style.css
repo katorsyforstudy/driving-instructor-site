@@ -40,36 +40,36 @@ section {
 
 /* HERO */
 #hero {
-  background: #dcdcdc;
-  padding: 80px 20px;
-}
-
-.hero-content {
-  max-width: 900px;
-  margin: auto;
+  background: linear-gradient(135deg, #1e90ff, #0d6efd);
+  color: white;
+  text-align: center;
 }
 
 .hero-content h2 {
-  font-size: 32px;
-  margin-bottom: 15px;
+  font-size: 36px;
 }
 
 .hero-content p {
-  margin-bottom: 20px;
+  font-size: 18px;
 }
 
 .services {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-top: 20px;
 }
 
-.card {
-  flex: 1;
-  background: #e0e0e0;
-  padding: 30px;
-  text-align: center;
+.card, .why-card {
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
   border-radius: 10px;
+
+}
+
+.card:hover, .why-card:hover {
+  transform: translateY(-5px);
 }
 .about {
   display: flex;
@@ -92,13 +92,19 @@ section {
   display: flex;
   gap: 20px;
   margin-top: 20px;
+  
+  
 }
 
-.why-card {
-  flex: 1;
-  background: #e6e6e6;
-  padding: 20px;
+.card {
+  background: #e0e0e0;
+  padding: 40px 20px;
+  text-align: center;
   border-radius: 10px;
+  min-height: 120px;
+
+  /* твоя анимация остаётся */
+  transition: 0.3s;
 }
 /* КОНТАКТЫ */
 #contacts form {
@@ -131,4 +137,20 @@ button:hover {
 footer {
   text-align: center;
   padding: 20px;
+}
+@media (max-width: 768px) {
+  .services,
+  .about,
+  .why-cards {
+    flex-direction: column;
+  }
+
+  .hero-content h2 {
+    font-size: 24px;
+  }
+
+  section {
+    margin: 10px;
+    padding: 20px;
+  }
 }

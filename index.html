@@ -23,7 +23,9 @@
   <div class="hero-content">
     <h2>Научитесь водить<br>уверенно и без стресса</h2>
     <p>Обучение вождению и повышение навыков</p>
-    <button>Записаться на занятия</button>
+    <button onclick="document.getElementById('contacts').scrollIntoView({behavior: 'smooth'})">
+  Записаться на занятия
+</button>
   </div>
 </section>
 
@@ -71,15 +73,13 @@
 </section>
 
   <!-- КОНТАКТЫ + ФОРМА -->
-  <section id="contacts">
-    <h2>Контакты</h2>
-    <p>Телефон: +7 (___) ___-__-__</p>
-
-    <form id="signupForm">
-      <input type="text" id="name" placeholder="Ваше имя" required>
-      <input type="tel" id="phone" placeholder="Телефон" required>
-      <button type="submit">Отправить</button>
-    </form>
+  <form id="signupForm">
+  <input type="text" id="name" placeholder="Ваше имя" required>
+  <input type="tel" id="phone" placeholder="Телефон (+998)" required>
+  <textarea id="userMessage" placeholder="Ваш вопрос" required></textarea>
+  <button type="submit">Отправить</button>
+</form>
+<p id="formFeedback"></p>
 
     <p id="message"></p>
   </section>
