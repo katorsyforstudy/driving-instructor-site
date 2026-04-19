@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
@@ -8,15 +9,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 📦 Храним брони в простом массиве (для простоты)
+// 📦 Храним брони в памяти (для простоты)
 const bookings = [];
 
 // 🔐 НАСТРОЙКА ПОЧТЫ
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "yourbestinstructor@gmail.com", // твоя почта
-    pass: "gmvm nokg vunb alav", // пароль приложения Gmail
+    user: "yourbestinstructor@gmail.com",
+    pass: 'gmvm nokg vunb  alav', // пароль приложения Gmail
   },
 });
 
@@ -66,8 +67,7 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// 🏠 Статика: если ты вдруг захочешь отдавать index.html через сервер
-// (по умолчанию используй просто http://localhost:3000/index.html в браузере)
+// 🏠 Сервируем статику (index.html, admin.html, style.css, script.js, admin.js)
 app.use(express.static(path.join(__dirname, ".")));
 
 app.listen(3000, () => {

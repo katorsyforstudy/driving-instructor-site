@@ -1,13 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('signupForm');
-  const message = document.getElementById('formFeedback');
-  const phoneInput = document.getElementById('phone');
+// script.js
+document.addEventListener("DOMContentLoaded", () => {
+  // 📩 Форма "Контакты"
+  const form = document.getElementById("signupForm");
+  const message = document.getElementById("formFeedback");
+  const phoneInput = document.getElementById("phone");
 
   // Сразу вставляем код страны
   phoneInput.value = "+998 ";
 
-  phoneInput.addEventListener('input', function () {
-    let numbers = this.value.replace(/\D/g, '');
+  phoneInput.addEventListener("input", function () {
+    let numbers = this.value.replace(/\D/g, "");
 
     // убираем 998 если пользователь пытается его ввести
     if (numbers.startsWith("998")) {
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // запрещаем удалять +998
-  phoneInput.addEventListener('keydown', function(e) {
+  phoneInput.addEventListener("keydown", function (e) {
     if (this.selectionStart <= 5 && (e.key === "Backspace" || e.key === "Delete")) {
       e.preventDefault();
     }
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // проверка номера
   function isValidUzbekPhone(phone) {
-    const digits = phone.replace(/\D/g, '');
+    const digits = phone.replace(/\D/g, "");
     return digits.length === 12; // 998 + 9 цифр
   }
 
@@ -45,11 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return msg.trim().length > 0;
   }
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const phone = phoneInput.value;
-    const userMessage = document.getElementById('userMessage').value;
+    const userMessage = document.getElementById("userMessage").value;
 
     if (!isValidUzbekPhone(phone)) {
       message.textContent = "Введите полный номер телефона";
@@ -63,28 +65,73 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    fetch('http://localhost:3000/send', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    name: document.getElementById('name').value,
-    phone: phoneInput.value,
-    message: userMessage
-  })
-})
-.then(res => res.json())
-.then(data => {
-  message.textContent = "Заявка отправлена!";
-  message.style.color = "green";
+    fetch("http://localhost:3000/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: document.getElementById("name").value,
+        phone: phoneInput.value,
+        message: userMessage,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        message.textContent = "Заявка отправлена!";
+        message.style.color = "green";
 
-  form.reset();
-  phoneInput.value = "+998 ";
-})
-.catch(() => {
-  message.textContent = "Ошибка отправки";
-  message.style.color = "red";
-});
+        form.reset();
+        phoneInput.value = "+998 ";
+      })
+      .catch(() => {
+        message.textContent = "Ошибка отправки";
+        message.style.color = "red";
+      });
   });
+
+  // 📅 Форма бронирования
+  const bookingForm = document.getElementById("bookingForm");
+  const bookingFeedback = document.getElementById("bookingFeedback");
+
+  if (bookingForm) {
+    bookingForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("nameBooking").value.trim();
+      const phone = document.getElementById("phoneBooking").value.trim();
+      const date = document.getElementById("bookingDate").value;
+      const time = document.getElementById("bookingTime").value;
+
+      if (!name || !phone || !date || !time) {
+        bookingFeedback.textContent = "Заполните все поля";
+        bookingFeedback.style.color = "red";
+        return;
+      }
+
+      const bookingData = { name, phone, date, time };
+
+      try {
+        const res = await fetch("http://localhost:3000/booking", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bookingData),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          bookingFeedback.textContent = "Занятие забронировано!";
+          bookingFeedback.style.color = "green";
+          bookingForm.reset();
+        } else {
+          bookingFeedback.textContent = data.error || "Ошибка";
+          bookingFeedback.style.color = "red";
+        }
+      } catch (error) {
+        bookingFeedback.textContent = "Не удалось подключиться к серверу";
+        bookingFeedback.style.color = "red";
+      }
+    });
+  }
 });
