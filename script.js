@@ -1,100 +1,144 @@
 // script.js
 document.addEventListener("DOMContentLoaded", () => {
-  // 📩 Форма "Контакты"
-  const form = document.getElementById("signupForm");
-  const message = document.getElementById("formFeedback");
+  // 📩 Форма "Контакты" (заявка)
+  const contactForm = document.getElementById("signupForm");
+  const contactFeedback = document.getElementById("formFeedback");
   const phoneInput = document.getElementById("phone");
 
-  // Сразу вставляем код страны
-  phoneInput.value = "+998 ";
+  // 🚗 Проверка и форматирование номера телефона
+  if (phoneInput) {
+    // Сразу вставляем код страны
+    phoneInput.value = "+998 ";
 
-  phoneInput.addEventListener("input", function () {
-    let numbers = this.value.replace(/\D/g, "");
+    phoneInput.addEventListener("input", function () {
+      let numbers = this.value.replace(/\D/g, "");
 
-    // убираем 998 если пользователь пытается его ввести
-    if (numbers.startsWith("998")) {
-      numbers = numbers.slice(3);
-    }
+      // Убираем 998, если пользователь пытается его ввести
+      if (numbers.startsWith("998")) {
+        numbers = numbers.slice(3);
+      }
 
-    // ограничиваем до 9 цифр
-    numbers = numbers.substring(0, 9);
+      // Ограничиваем до 9 цифр
+      numbers = numbers.substring(0, 9);
 
-    let formatted = "+998 ";
+      let formatted = "+998 ";
 
-    if (numbers.length > 0) formatted += numbers.substring(0, 2);
-    if (numbers.length >= 3) formatted += " " + numbers.substring(2, 5);
-    if (numbers.length >= 6) formatted += " " + numbers.substring(5, 7);
-    if (numbers.length >= 8) formatted += " " + numbers.substring(7, 9);
+      if (numbers.length > 0) formatted += numbers.substring(0, 2);
+      if (numbers.length >= 3) formatted += " " + numbers.substring(2, 5);
+      if (numbers.length >= 6) formatted += " " + numbers.substring(5, 7);
+      if (numbers.length >= 8) formatted += " " + numbers.substring(7, 9);
 
-    this.value = formatted;
-  });
+      this.value = formatted;
+    });
 
-  // запрещаем удалять +998
-  phoneInput.addEventListener("keydown", function (e) {
-    if (this.selectionStart <= 5 && (e.key === "Backspace" || e.key === "Delete")) {
-      e.preventDefault();
-    }
-  });
-
-  // проверка номера
-  function isValidUzbekPhone(phone) {
-    const digits = phone.replace(/\D/g, "");
-    return digits.length === 12; // 998 + 9 цифр
+    // Запрещаем удалять +998
+    phoneInput.addEventListener("keydown", function (e) {
+      if (this.selectionStart <= 5 && (e.key === "Backspace" || e.key === "Delete")) {
+        e.preventDefault();
+      }
+    });
   }
 
-  // проверка сообщения
+  // 📞 Общая функция валидации узбекского номера
+  function isValidUzbekPhone(phone) {
+    const digits = phone.replace(/\D/g, "");
+    return /^\+?998/.test(digits) && digits.length === 12;
+  }
+
+  // ✍️ Проверка, чтобы сообщение было не пустым
   function isValidMessage(msg) {
     return msg.trim().length > 0;
   }
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+  // ✅ Обработка формы "Контакты"
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    const phone = phoneInput.value;
-    const userMessage = document.getElementById("userMessage").value;
+      const phone = phoneInput.value;
+      const userMessage = document.getElementById("userMessage").value;
 
-    if (!isValidUzbekPhone(phone)) {
-      message.textContent = "Введите полный номер телефона";
-      message.style.color = "red";
-      return;
-    }
+      if (!isValidUzbekPhone(phone)) {
+        contactFeedback.textContent = "Введите полный номер телефона (+998XXXXXXXXX)";
+        contactFeedback.style.color = "red";
+        return;
+      }
 
-    if (!isValidMessage(userMessage)) {
-      message.textContent = "Напишите ваш вопрос";
-      message.style.color = "red";
-      return;
-    }
+      if (!isValidMessage(userMessage)) {
+        contactFeedback.textContent = "Напишите ваш вопрос";
+        contactFeedback.style.color = "red";
+        return;
+      }
 
-    fetch("http://localhost:3000/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: document.getElementById("name").value,
-        phone: phoneInput.value,
-        message: userMessage,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        message.textContent = "Заявка отправлена!";
-        message.style.color = "green";
-
-        form.reset();
-        phoneInput.value = "+998 ";
+      fetch("http://localhost:3000/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          phone: phone,
+          message: userMessage,
+        }),
       })
-      .catch(() => {
-        message.textContent = "Ошибка отправки";
-        message.style.color = "red";
-      });
-  });
+        .then((res) => res.json())
+        .then((data) => {
+          contactFeedback.textContent = "Заявка отправлена!";
+          contactFeedback.style.color = "green";
+          contactForm.reset();
+          if (phoneInput) {
+            phoneInput.value = "+998 ";
+          }
+        })
+        .catch(() => {
+          contactFeedback.textContent = "Ошибка отправки";
+          contactFeedback.style.color = "red";
+        });
+    });
+  }
 
-  // 📅 Форма бронирования
+  // 📅 Форма бронирования занятия
   const bookingForm = document.getElementById("bookingForm");
   const bookingFeedback = document.getElementById("bookingFeedback");
 
   if (bookingForm) {
+    // Форматирование телефона для бронирования
+    const phoneBookingInput = document.getElementById("phoneBooking");
+
+    if (phoneBookingInput) {
+      // Устанавливаем начальный формат
+      phoneBookingInput.value = "+998 ";
+
+      phoneBookingInput.addEventListener("input", function () {
+        let numbers = this.value.replace(/\D/g, "");
+
+        if (numbers.startsWith("998")) {
+          numbers = numbers.slice(3);
+        }
+
+        numbers = numbers.substring(0, 9);
+
+        let formatted = "+998 ";
+
+        if (numbers.length > 0) formatted += numbers.substring(0, 2);
+        if (numbers.length >= 3) formatted += " " + numbers.substring(2, 5);
+        if (numbers.length >= 6) formatted += " " + numbers.substring(5, 7);
+        if (numbers.length >= 8) formatted += " " + numbers.substring(7, 9);
+
+        this.value = formatted;
+      });
+
+      // Запрещаем удалять +998
+      phoneBookingInput.addEventListener("keydown", function (e) {
+        if (
+          this.selectionStart <= 5 &&
+          (e.key === "Backspace" || e.key === "Delete")
+        ) {
+          e.preventDefault();
+        }
+      });
+    }
+
     bookingForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -103,8 +147,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const date = document.getElementById("bookingDate").value;
       const time = document.getElementById("bookingTime").value;
 
-      if (!name || !phone || !date || !time) {
+      // Проверка обязательных полей
+      if (!name || !date || !time) {
         bookingFeedback.textContent = "Заполните все поля";
+        bookingFeedback.style.color = "red";
+        return;
+      }
+
+      // ВАЛИДАЦИЯ НОМЕРА ТЕЛЕФОНА — как в регистрации
+      if (!phone) {
+        bookingFeedback.textContent = "Введите номер телефона";
+        bookingFeedback.style.color = "red";
+        return;
+      }
+
+      const phoneDigits = phone.replace(/\D/g, "");
+      if (!(/^\+?998/.test(phoneDigits) && phoneDigits.length === 12)) {
+        bookingFeedback.textContent =
+          "Введите полный номер телефона (+998XXXXXXXXX)";
         bookingFeedback.style.color = "red";
         return;
       }
@@ -114,7 +174,9 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const res = await fetch("http://localhost:3000/booking", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(bookingData),
         });
 
@@ -124,6 +186,9 @@ document.addEventListener("DOMContentLoaded", () => {
           bookingFeedback.textContent = "Занятие забронировано!";
           bookingFeedback.style.color = "green";
           bookingForm.reset();
+          if (phoneBookingInput) {
+            phoneBookingInput.value = "+998 ";
+          }
         } else {
           bookingFeedback.textContent = data.error || "Ошибка";
           bookingFeedback.style.color = "red";
@@ -131,6 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (error) {
         bookingFeedback.textContent = "Не удалось подключиться к серверу";
         bookingFeedback.style.color = "red";
+        console.error("Ошибка запроса:", error);
       }
     });
   }

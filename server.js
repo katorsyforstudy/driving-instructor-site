@@ -9,19 +9,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 📦 Храним брони в памяти (для простоты)
+// 📦 Храним брони в памяти
 const bookings = [];
 
-// 🔐 НАСТРОЙКА ПОЧТЫ
+// 🔐 Настройка Gmail
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "yourbestinstructor@gmail.com",
-    pass: 'gmvm nokg vunb  alav', // пароль приложения Gmail
+    pass: "gmvm nokg vunb alav", // твой пароль приложения
   },
 });
 
-// 📩 API отправки заявки из формы "Контакты"
+// 📩 Отправка заявки
 app.post("/send", async (req, res) => {
   const { name, phone, message } = req.body;
 
@@ -48,7 +48,7 @@ app.post("/send", async (req, res) => {
   }
 });
 
-// 📅 API бронирования занятия
+// 📅 Бронирование занятия
 app.post("/booking", (req, res) => {
   const { name, phone, date, time } = req.body;
 
@@ -62,12 +62,12 @@ app.post("/booking", (req, res) => {
   res.json({ success: true, id });
 });
 
-// 📋 API для получения всех броней (для админа)
+// 📋 Получение броней (для админа)
 app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// 🏠 Сервируем статику (index.html, admin.html, style.css, script.js, admin.js)
+// 🏠 Сервируем статику
 app.use(express.static(path.join(__dirname, ".")));
 
 app.listen(3000, () => {
