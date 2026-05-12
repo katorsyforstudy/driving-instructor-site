@@ -1,9 +1,9 @@
-// admin.js
 document.addEventListener("DOMContentLoaded", async () => {
   const bookingsList = document.getElementById("bookingsList");
 
   try {
-    const res = await fetch("http://localhost:3000/bookings");
+    // относительный путь: работает и на localhost, и на Railway
+    const res = await fetch("/bookings");
     const bookings = await res.json();
 
     if (Array.isArray(bookings) && bookings.length === 0) {
