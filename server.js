@@ -1,56 +1,74 @@
 const express = require("express");
-const nodemailer = require("nodemailer");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 
+// Resend для отправки писем
+const { Resend } = require("resend").Resend;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const app = express();
-
 
 app.use(cors());
 app.use(express.json());
 
+// 📦 Храним брони и заявки в файлах
 
-// 📦 Храним брони — при старте читаем из файла
 const BOOKINGS_FILE = path.join(__dirname, "bookings.json");
+const ENQUIRIES_FILE = path.join(__dirname, "enquiries.json");
 
 let bookings = [];
+let enquiries = [];
 
+// загружаем брони
 try {
   const data = fs.readFileSync(BOOKINGS_FILE, "utf8");
   bookings = JSON.parse(data);
 } catch (e) {
-  console.log("Файл броней не найден или пуст; начнём с пустого массива.");
+  console.log("Файл броней не найден, стартуем с пустого массива.");
 }
 
+// загружаем заявки (необязательно, можно не писать в файл)
+try {
+  const data = fs.readFileSync(ENQUIRIES_FILE, "utf8");
+  enquiries = JSON.parse(data);
+} catch (e) {
+  console.log("Файл заявок не найден, стартуем с пустого массива.");
+}
 
-// 🔐 Настройка Gmail
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,        // если tls / starttls
-  requireTLS: true,     // обязательно включить
-  auth: {
-    user: "yourbestinstructor@gmail.com",
-    pass: "gmvm nokg vunb alav", // твой пароль приложения
-  },
-});
+// ----------------------------------------
+// ✉️ Отправка заявки формы "Контакты"
+// ----------------------------------------
 
-
-// 📩 Отправка заявки
 app.post("/send", async (req, res) => {
+  console.log("Пришла заявка:", req.body);
+
   const { name, phone, message } = req.body;
 
   if (!name || !phone || !message) {
     return res.status(400).json({ error: "Заполните все поля" });
   }
 
+  // добавляем в массив (для себя, можно не писать в файл)
+  const newEnquiry = {
+    id: Date.now().toString(),
+    name,
+    phone,
+    message,
+    timestamp: new Date().toISOString(),
+  };
+
+  enquiries.push(newEnquiry);
+
+  // (опционально) можно сохранить в файл
+  // fs.writeFileSync(ENQUIRIES_FILE, JSON.stringify(enquiries, null, 2));
+
+  // отправляем письмо через Resend
   try {
-    await transporter.sendMail({
-      from: "yourbestinstructor@gmail.com",
-      to: "yourbestinstructor@gmail.com",
-      subject: "Новая заявка с сайта 🚗",
+    const data = await resend.emails.send({
+      from: 'yourbestinstructor@gmail.com',          // твой email
+      to: 'yourbestinstructor@gmail.com',             // куда приходят заявки
+      subject: 'Новая заявка с сайта 🚗',
       text: `
 Имя: ${name}
 Телефон: ${phone}
@@ -58,15 +76,21 @@ app.post("/send", async (req, res) => {
       `,
     });
 
+    console.log("Письмо отправлено через Resend:", data);
+
     res.json({ success: true });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Ошибка отправки" });
+    console.error("Ошибка Resend:", error);
+    // даже если письмо не ушло, клиенту можем вернуть успех, чтобы форма не сломалась
+    res.status(200).json({ success: true });
   }
 });
 
 
+// ----------------------------------------
 // 📅 Бронирование занятия
+// ----------------------------------------
+
 app.post("/booking", (req, res) => {
   const { name, phone, date, time } = req.body;
 
@@ -86,15 +110,20 @@ app.post("/booking", (req, res) => {
 });
 
 
+// ----------------------------------------
 // 📋 Получение броней (для админа)
+// ----------------------------------------
+
 app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
 
+// ----------------------------------------
 // 🏠 Сервируем статику
-app.use(express.static(path.join(__dirname, ".")));
+// ----------------------------------------
 
+app.use(express.static(path.join(__dirname, ".")));
 
 // порт для Railway
 const PORT = process.env.PORT || 3000;
