@@ -66,7 +66,7 @@ app.post("/send", async (req, res) => {
   // отправляем письмо через Resend
   try {
     const data = await resend.emails.send({
-      from: 'yourbestinstructor@gmail.com',          // твой email
+      from: 'onboarding@resend.dev',          
       to: 'yourbestinstructor@gmail.com',             // куда приходят заявки
       subject: 'Новая заявка с сайта 🚗',
       text: `
