@@ -1,4 +1,3 @@
-// script.js
 document.addEventListener("DOMContentLoaded", () => {
   // 📩 Форма "Контакты" (заявка)
   const contactForm = document.getElementById("signupForm");
@@ -39,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 📞 Общая функция валидации узбекского номера
+  // 📞 Проверка узбекского номера
   function isValidUzbekPhone(phone) {
     const digits = phone.replace(/\D/g, "");
     return /^\+?998/.test(digits) && digits.length === 12;
@@ -70,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      fetch("http://localhost:3000/send", {
+      fetch("/send", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,11 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const bookingFeedback = document.getElementById("bookingFeedback");
 
   if (bookingForm) {
-    // Форматирование телефона для бронирования
     const phoneBookingInput = document.getElementById("phoneBooking");
 
     if (phoneBookingInput) {
-      // Устанавливаем начальный формат
       phoneBookingInput.value = "+998 ";
 
       phoneBookingInput.addEventListener("input", function () {
@@ -128,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
         this.value = formatted;
       });
 
-      // Запрещаем удалять +998
       phoneBookingInput.addEventListener("keydown", function (e) {
         if (
           this.selectionStart <= 5 &&
@@ -147,14 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const date = document.getElementById("bookingDate").value;
       const time = document.getElementById("bookingTime").value;
 
-      // Проверка обязательных полей
       if (!name || !date || !time) {
         bookingFeedback.textContent = "Заполните все поля";
         bookingFeedback.style.color = "red";
         return;
       }
 
-      // ВАЛИДАЦИЯ НОМЕРА ТЕЛЕФОНА — как в регистрации
       if (!phone) {
         bookingFeedback.textContent = "Введите номер телефона";
         bookingFeedback.style.color = "red";
@@ -172,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const bookingData = { name, phone, date, time };
 
       try {
-        const res = await fetch("http://localhost:3000/booking", {
+        const res = await fetch("/booking", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
