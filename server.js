@@ -27,7 +27,10 @@ try {
 
 // 🔐 Настройка Gmail
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,        // если tls / starttls
+  requireTLS: true,     // обязательно включить
   auth: {
     user: "yourbestinstructor@gmail.com",
     pass: "gmvm nokg vunb alav", // твой пароль приложения
