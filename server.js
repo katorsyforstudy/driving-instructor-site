@@ -1,22 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-
-// путь к файлу с бронями
-const BOOKINGS_FILE = path.join(__dirname, "bookings.json");
-
-// загружаем брони при старте
-let bookings = [];
-
-try {
-  const data = fs.readFileSync(BOOKINGS_FILE, "utf8");
-  bookings = JSON.parse(data);
-} catch (e) {
-  console.log("Файл броней не найден или пуст, стартуем с пустым массивом.");
-}
-
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 
 
 const app = express();
@@ -26,8 +12,17 @@ app.use(cors());
 app.use(express.json());
 
 
-// 📦 Храним брони в памяти
-const bookings = [];
+// 📦 Храним брони — при старте читаем из файла
+const BOOKINGS_FILE = path.join(__dirname, "bookings.json");
+
+let bookings = [];
+
+try {
+  const data = fs.readFileSync(BOOKINGS_FILE, "utf8");
+  bookings = JSON.parse(data);
+} catch (e) {
+  console.log("Файл броней не найден или пуст; начнём с пустого массива.");
+}
 
 
 // 🔐 Настройка Gmail
@@ -35,7 +30,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "yourbestinstructor@gmail.com",
-    pass: "gmvm nokg vunb alav", // пароль приложения
+    pass: "gmvm nokg vunb alav", // твой пароль приложения
   },
 });
 
@@ -77,10 +72,14 @@ app.post("/booking", (req, res) => {
   }
 
   const id = Date.now().toString();
- bookings.push({ id, name, phone, date, time });
+  const newBooking = { id, name, phone, date, time };
 
-// сразу сохраняем массив в файл
-fs.writeFileSync(BOOKINGS_FILE, JSON.stringify(bookings, null, 2));
+  bookings.push(newBooking);
+
+  // сохраняем в файл
+  fs.writeFileSync(BOOKINGS_FILE, JSON.stringify(bookings, null, 2));
+
+  res.json({ success: true, id });
 });
 
 
@@ -94,6 +93,7 @@ app.get("/bookings", (req, res) => {
 app.use(express.static(path.join(__dirname, ".")));
 
 
+// порт для Railway
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
