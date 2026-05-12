@@ -4,8 +4,7 @@ const path = require("path");
 const fs = require("fs");
 
 // Resend для отправки писем
-const { Resend } = require("resend").Resend;
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = require("resend").Resend(process.env.RESEND_API_KEY);
 
 const app = express();
 
