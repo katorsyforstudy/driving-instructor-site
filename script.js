@@ -6,18 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🚗 Проверка и форматирование номера телефона
   if (phoneInput) {
-    // Сразу вставляем код страны
     phoneInput.value = "+998 ";
 
     phoneInput.addEventListener("input", function () {
       let numbers = this.value.replace(/\D/g, "");
 
-      // Убираем 998, если пользователь пытается его ввести
       if (numbers.startsWith("998")) {
         numbers = numbers.slice(3);
       }
 
-      // Ограничиваем до 9 цифр
       numbers = numbers.substring(0, 9);
 
       let formatted = "+998 ";
@@ -30,28 +27,29 @@ document.addEventListener("DOMContentLoaded", () => {
       this.value = formatted;
     });
 
-    // Запрещаем удалять +998
     phoneInput.addEventListener("keydown", function (e) {
-      if (this.selectionStart <= 5 && (e.key === "Backspace" || e.key === "Delete")) {
+      if (
+        this.selectionStart <= 5 &&
+        (e.key === "Backspace" || e.key === "Delete")
+      ) {
         e.preventDefault();
       }
     });
   }
 
-  // 📞 Проверка узбекского номера
+  // ✅ Валидация номера
   function isValidUzbekPhone(phone) {
     const digits = phone.replace(/\D/g, "");
     return /^\+?998/.test(digits) && digits.length === 12;
   }
 
-  // ✍️ Проверка, чтобы сообщение было не пустым
   function isValidMessage(msg) {
     return msg.trim().length > 0;
   }
 
   // ✅ Обработка формы "Контакты"
   if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
+    contactForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const phone = phoneInput.value;
@@ -69,30 +67,33 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      fetch("/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: document.getElementById("name").value,
-          phone: phone,
-          message: userMessage,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
+      const name = document.getElementById("name").value;
+
+      try {
+        const res = await fetch("/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, phone, message: userMessage }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
           contactFeedback.textContent = "Заявка отправлена!";
           contactFeedback.style.color = "green";
           contactForm.reset();
-          if (phoneInput) {
-            phoneInput.value = "+998 ";
-          }
-        })
-        .catch(() => {
-          contactFeedback.textContent = "Ошибка отправки";
+          if (phoneInput) phoneInput.value = "+998 ";
+        } else {
+          contactFeedback.textContent = data.error || "Ошибка";
           contactFeedback.style.color = "red";
-        });
+        }
+      } catch (error) {
+        contactFeedback.textContent = "Ошибка отправки";
+        contactFeedback.style.color = "red";
+        console.error("Form error", error);
+      }
     });
   }
 
@@ -180,9 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
           bookingFeedback.textContent = "Занятие забронировано!";
           bookingFeedback.style.color = "green";
           bookingForm.reset();
-          if (phoneBookingInput) {
-            phoneBookingInput.value = "+998 ";
-          }
+          if (phoneBookingInput) phoneBookingInput.value = "+998 ";
         } else {
           bookingFeedback.textContent = data.error || "Ошибка";
           bookingFeedback.style.color = "red";
@@ -190,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (error) {
         bookingFeedback.textContent = "Не удалось подключиться к серверу";
         bookingFeedback.style.color = "red";
-        console.error("Ошибка запроса:", error);
+        console.error("Booking error", error);
       }
     });
   }

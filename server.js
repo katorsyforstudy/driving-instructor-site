@@ -1,25 +1,29 @@
-// server.js
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 const path = require("path");
 
+
 const app = express();
+
 
 app.use(cors());
 app.use(express.json());
 
+
 // 📦 Храним брони в памяти
 const bookings = [];
+
 
 // 🔐 Настройка Gmail
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "yourbestinstructor@gmail.com",
-    pass: "gmvm nokg vunb alav", // твой пароль приложения
+    pass: "gmvm nokg vunb alav", // пароль приложения
   },
 });
+
 
 // 📩 Отправка заявки
 app.post("/send", async (req, res) => {
@@ -48,6 +52,7 @@ app.post("/send", async (req, res) => {
   }
 });
 
+
 // 📅 Бронирование занятия
 app.post("/booking", (req, res) => {
   const { name, phone, date, time } = req.body;
@@ -62,13 +67,16 @@ app.post("/booking", (req, res) => {
   res.json({ success: true, id });
 });
 
+
 // 📋 Получение броней (для админа)
 app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
+
 // 🏠 Сервируем статику
 app.use(express.static(path.join(__dirname, ".")));
+
 
 const PORT = process.env.PORT || 3000;
 
