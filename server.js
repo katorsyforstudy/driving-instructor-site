@@ -1,3 +1,19 @@
+const fs = require("fs");
+const path = require("path");
+
+// путь к файлу с бронями
+const BOOKINGS_FILE = path.join(__dirname, "bookings.json");
+
+// загружаем брони при старте
+let bookings = [];
+
+try {
+  const data = fs.readFileSync(BOOKINGS_FILE, "utf8");
+  bookings = JSON.parse(data);
+} catch (e) {
+  console.log("Файл броней не найден или пуст, стартуем с пустым массивом.");
+}
+
 const express = require("express");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
@@ -62,9 +78,10 @@ app.post("/booking", (req, res) => {
   }
 
   const id = Date.now().toString();
-  bookings.push({ id, name, phone, date, time });
+ bookings.push({ id, name, phone, date, time });
 
-  res.json({ success: true, id });
+// сразу сохраняем массив в файл
+fs.writeFileSync(BOOKINGS_FILE, JSON.stringify(bookings, null, 2));
 });
 
 
