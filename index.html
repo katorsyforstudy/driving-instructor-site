@@ -22,7 +22,7 @@
    
 
     header {
-      background: #1e90ff;
+      background: #0d6efd;
       color: white;
       padding: 20px;
       text-align: center;
@@ -131,17 +131,7 @@
       background: #0d6efd;
     }
 
-    [data-fade] {
-      opacity: 0;
-      transform: translateY(20px);
-      will-change: opacity, transform;
-      transition: opacity 0.5s, transform 0.5s;
-    }
-
-    [data-fade].show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    
     /* FADE-IN ЭФФЕКТ ПРИ СКРОЛЛЕ */
     [data-fade] {
       opacity: 0;
@@ -441,9 +431,19 @@
 <header>
   <h1>Частный автоинструктор</h1>
   <nav>
-    <a href="#services">Услуги</a>
-    <a href="#about">Обо мне</a>
-    <a href="#contacts">Контакты</a>
+    
+    <button onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">
+        Услуги
+      </button>
+    
+    <button onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+        Обо мне
+      </button>
+
+      <button onclick="document.getElementById('contacts').scrollIntoView({behavior: 'smooth'})">
+        Контакты
+      </button>
+    
   </nav>
 </header>
 
@@ -472,12 +472,13 @@
   <section id="about" data-fade>
     <h2>Обо мне</h2>
     <div class="about">
-      <div class="photo"></div>
+      <img src="img/Mama.jpg" alt="Фото автоинструктора" class="photo-img">
+
       <p>
         Приветствую! Меня зовут Ирина, я — частный автоинструктор.
-        Обучаю с нуля, помогаю уверенно чувствовать себя за рулём.
+        Помогаю уверенно чувствовать себя за рулём.
         У меня индивидуальный подход, гибкий график и комфортная атмосфера.
-        Мы работаем в удобное для вас время и по вашему маршруту.
+        Я в удобное для вас время и по вашему маршруту.
       </p>
     </div>
   </section>
@@ -560,14 +561,14 @@
   </section>
 
   <section id="faq" data-fade>
-    <h2>Часто задаваемые вопросы</h2>
+    <h2>Часто задаваемые вопросы:</h2>
     <div>
       <p><strong>Сколько длится занятие?</strong></p>
       <p>Обычно 1–2 часа.</p>
     </div>
     <div>
       <p><strong>Можно ли с нуля?</strong></p>
-      <p>Да, обучаю с полного нуля.</p>
+      <p>Нет, уроки вождения рассчитаны на улучшение езды, и получение уверенности за рулем, у ученика должны быть права.</p>
     </div>
   </section>
 

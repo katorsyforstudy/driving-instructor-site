@@ -78,11 +78,14 @@ section {
   margin-top: 20px;
 }
 
-.photo {
-  width: 150px;
-  height: 150px;
-  background: #ccc;
-  border-radius: 10px;
+.photo-img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 14px;
+  flex-shrink: 0;
+  border: 3px solid #1e90ff;
+  background: #ddd;
 }
 
 #why {
