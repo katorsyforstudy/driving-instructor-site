@@ -1,8 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ✅ Плавный скроллинг по ссылкам в nav
+  document.querySelectorAll("nav a").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+
+
   // 📩 Форма "Контакты" (заявка)
   const contactForm = document.getElementById("signupForm");
   const contactFeedback = document.getElementById("formFeedback");
   const phoneInput = document.getElementById("phone");
+
 
   // 🚗 Проверка и форматирование номера телефона
   if (phoneInput) {
@@ -37,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+
   // ✅ Валидация номера
   function isValidUzbekPhone(phone) {
     const digits = phone.replace(/\D/g, "");
@@ -46,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function isValidMessage(msg) {
     return msg.trim().length > 0;
   }
+
 
   // ✅ Обработка формы "Контакты"
   if (contactForm) {
@@ -96,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
 
   // 📅 Форма бронирования занятия
   const bookingForm = document.getElementById("bookingForm");
