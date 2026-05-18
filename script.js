@@ -1,5 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ Плавный скроллинг по ссылкам в nav
+  // 🌞/🌑 Переключение светлая/тёмная тема
+  // кнопка в header: onclick="document.body.classList.toggle('dark')"
+  // CSS-переменные в style.css: :root и .dark
+
+
+  // ✅ Плавный скроллинг по ссылкам в nav (services / about / contacts)
   document.querySelectorAll("nav a").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
@@ -11,13 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
-  // 📩 Форма "Контакты" (заявка)
+  // 📩 ФОРМА "Контакты" (заявка /send)
   const contactForm = document.getElementById("signupForm");
   const contactFeedback = document.getElementById("formFeedback");
   const phoneInput = document.getElementById("phone");
 
 
-  // 🚗 Проверка и форматирование номера телефона
+  // 🚗 Автоматическое форматирование номера телефона (+998 XX XXX XX XX)
   if (phoneInput) {
     phoneInput.value = "+998 ";
 
@@ -62,10 +67,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  // ✅ Обработка формы "Контакты"
+  // ✅ Обработка формы "Контакты" (/send)
   if (contactForm) {
     contactForm.addEventListener("submit", async function (e) {
       e.preventDefault();
+
+      const btn = e.target.querySelector("button[type='submit']");
+      const originalText = btn.textContent;
+
+      // триггер-прогресс: "⏳ Обработка..."
+      btn.textContent = "⏳ Обработка...";
+      btn.disabled = true;
 
       const phone = phoneInput.value;
       const userMessage = document.getElementById("userMessage").value;
@@ -73,12 +85,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isValidUzbekPhone(phone)) {
         contactFeedback.textContent = "Введите полный номер телефона (+998XXXXXXXXX)";
         contactFeedback.style.color = "red";
+        btn.disabled = false;
+        btn.textContent = originalText;
         return;
       }
 
       if (!isValidMessage(userMessage)) {
         contactFeedback.textContent = "Напишите ваш вопрос";
         contactFeedback.style.color = "red";
+        btn.disabled = false;
+        btn.textContent = originalText;
         return;
       }
 
@@ -100,6 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
           contactFeedback.style.color = "green";
           contactForm.reset();
           if (phoneInput) phoneInput.value = "+998 ";
+          btn.textContent = "✓ Отправлено!";
         } else {
           contactFeedback.textContent = data.error || "Ошибка";
           contactFeedback.style.color = "red";
@@ -109,11 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
         contactFeedback.style.color = "red";
         console.error("Form error", error);
       }
+
+      // через 1.5 секунды вернём текст кнопки
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 1500);
     });
   }
 
 
-  // 📅 Форма бронирования занятия
+  // 📅 ФОРМА БРОНИРОВАНИЯ занятия (/booking)
   const bookingForm = document.getElementById("bookingForm");
   const bookingFeedback = document.getElementById("bookingFeedback");
 
@@ -155,6 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
     bookingForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
+      const btn = e.target.querySelector("button[type='submit']");
+      const originalText = btn.textContent;
+
+      // триггер-прогресс: "⏳ Обработка..."
+      btn.textContent = "⏳ Обработка...";
+      btn.disabled = true;
+
       const name = document.getElementById("nameBooking").value.trim();
       const phone = document.getElementById("phoneBooking").value.trim();
       const date = document.getElementById("bookingDate").value;
@@ -163,12 +193,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!name || !date || !time) {
         bookingFeedback.textContent = "Заполните все поля";
         bookingFeedback.style.color = "red";
+        btn.disabled = false;
+        btn.textContent = originalText;
         return;
       }
 
       if (!phone) {
         bookingFeedback.textContent = "Введите номер телефона";
         bookingFeedback.style.color = "red";
+        btn.disabled = false;
+        btn.textContent = originalText;
         return;
       }
 
@@ -177,6 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingFeedback.textContent =
           "Введите полный номер телефона (+998XXXXXXXXX)";
         bookingFeedback.style.color = "red";
+        btn.disabled = false;
+        btn.textContent = originalText;
         return;
       }
 
@@ -198,6 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
           bookingFeedback.style.color = "green";
           bookingForm.reset();
           if (phoneBookingInput) phoneBookingInput.value = "+998 ";
+          btn.textContent = "✓ Забронировано!";
         } else {
           bookingFeedback.textContent = data.error || "Ошибка";
           bookingFeedback.style.color = "red";
@@ -207,6 +244,12 @@ document.addEventListener("DOMContentLoaded", () => {
         bookingFeedback.style.color = "red";
         console.error("Booking error", error);
       }
+
+      // через 1.5 секунды вернём текст кнопки
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 1500);
     });
   }
 });
